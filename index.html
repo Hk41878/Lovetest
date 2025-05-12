@@ -54,18 +54,7 @@
   button:hover {
     background: #ff1e56;
   }
-  .share-btn {
-    margin: 5px;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 30px;
-    color: white;
-    cursor: pointer;
-  }
-  .whatsapp { background-color: #25D366; }
-  .telegram { background-color: #0088cc; }
-  .instagram { background-color: #C13584; }
-  #poll, #result, #share { display: none; }
+  #poll, #result, #share, #instagramWarning { display: none; }
 </style>
 </head>
 <body>
@@ -73,6 +62,12 @@
 <h1>Love Match Quiz</h1>
 <p>Location Permission Status
 <span id="status" class="status-light red"></span></p>
+
+<div id="instagramWarning" class="card">
+  <h3>Open in external browser</h3>
+  <p>For full functionality, please open this page in your phone’s browser (like Chrome or Safari).</p>
+  <button onclick="openInBrowser()">Open in Browser</button>
+</div>
 
 <div id="poll" class="card">
   <div class="question">1. What do you like?</div>
@@ -116,16 +111,22 @@
 </div>
 
 <div id="share">
-  <h3>Share your result:</h3>
-  <button class="share-btn whatsapp" onclick="shareText('whatsapp')">WhatsApp</button>
-  <button class="share-btn telegram" onclick="shareText('telegram')">Telegram</button>
-  <button class="share-btn instagram" onclick="shareText('instagram')">Instagram</button>
+  <h3>Copy your result:</h3>
+  <button onclick="copyResult()">Copy to Clipboard</button>
 </div>
 
 <script>
   let latitude = '';
   let longitude = '';
   let finalMessage = '';
+
+  function isInstagramBrowser() {
+    return navigator.userAgent.includes("Instagram");
+  }
+
+  function openInBrowser() {
+    alert("Tap the browser icon or 'Open in browser' option in Instagram.");
+  }
 
   function askLocation() {
     if (navigator.geolocation) {
@@ -170,23 +171,20 @@
     document.getElementById('share').style.display = 'block';
   }
 
-  function shareText(platform) {
-    let shareURL = '';
-    const encodedMessage = encodeURIComponent(finalMessage);
-
-    if (platform === 'whatsapp') {
-      shareURL = `https://wa.me/?text=${encodedMessage}`;
-    } else if (platform === 'telegram') {
-      shareURL = `https://t.me/share/url?url=${encodedMessage}`;
-    } else if (platform === 'instagram') {
-      alert("Instagram does not support direct text sharing. Please copy the text manually.");
-      return;
-    }
-
-    window.open(shareURL, '_blank');
+  function copyResult() {
+    navigator.clipboard.writeText(finalMessage).then(function() {
+      alert('Result copied to clipboard!');
+    }, function(err) {
+      alert('Failed to copy. Please try manually.');
+    });
   }
 
-  askLocation();
+  // On page load
+  if (isInstagramBrowser()) {
+    document.getElementById('instagramWarning').style.display = 'block';
+  } else {
+    askLocation();
+  }
 </script>
 
 </body>
