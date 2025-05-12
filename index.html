@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Location & Poll Website</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+    .status-light { width: 20px; height: 20px; border-radius: 50%; display: inline-block; margin-left: 10px; }
+    .green { background-color: green; }
+    .red { background-color: red; }
+    .question { margin: 15px 0; }
+    .share-btn { margin: 5px; padding: 10px 15px; border: none; border-radius: 5px; color: white; cursor: pointer; }
+    .whatsapp { background-color: #25D366; }
+    .telegram { background-color: #0088cc; }
+    .instagram { background-color: #C13584; }
+    #poll, #result, #share { display: none; }
+  </style>
+</head>
+<body>
+
+<h2>Location Permission Status 
+  <span id="status" class="status-light red"></span>
+</h2>
+
+<div id="poll">
+  <div class="question">
+    1. What do you like?<br>
+    <input type="radio" name="q1" value="Coffee"> Coffee
+    <input type="radio" name="q1" value="Tea"> Tea
+  </div>
+
+  <div class="question">
+    2. Mountains or Sea?<br>
+    <input type="radio" name="q2" value="Mountains"> Mountains
+    <input type="radio" name="q2" value="Sea"> Sea
+  </div>
+
+  <div class="question">
+    3. Dance or Relax?<br>
+    <input type="radio" name="q3" value="Dance"> Dance
+    <input type="radio" name="q3" value="Relax"> Relax
+  </div>
+
+  <div class="question">
+    4. Car or Bike?<br>
+    <input type="radio" name="q4" value="Car"> Car
+    <input type="radio" name="q4" value="Bike"> Bike
+  </div>
+
+  <div class="question">
+    5. Beach or Room?<br>
+    <input type="radio" name="q5" value="Beach"> Beach
+    <input type="radio" name="q5" value="Room"> Room
+  </div>
+
+  <div class="question">
+    6. I Propose or He/She Propose?<br>
+    <input type="radio" name="q6" value="I Propose"> I Propose
+    <input type="radio" name="q6" value="He/She Propose"> He/She Propose
+  </div>
+
+  <div class="question">
+    7. Sleep or Romance?<br>
+    <input type="radio" name="q7" value="Sleep"> Sleep
+    <input type="radio" name="q7" value="Romance"> Romance
+  </div>
+
+  <div class="question">
+    8. Wish for Happy Life or Happy Family?<br>
+    <input type="radio" name="q8" value="Happy Life"> Happy Life
+    <input type="radio" name="q8" value="Happy Family"> Happy Family
+  </div>
+
+  <button onclick="generateResult()">Submit Answers</button>
+</div>
+
+<div id="result">
+  <h3>Your Generated Text:</h3>
+  <p id="finalText"></p>
+</div>
+
+<div id="share">
+  <h3>Share:</h3>
+  <button class="share-btn whatsapp" onclick="shareText('whatsapp')">WhatsApp</button>
+  <button class="share-btn telegram" onclick="shareText('telegram')">Telegram</button>
+  <button class="share-btn instagram" onclick="shareText('instagram')">Instagram</button>
+</div>
+
+<script>
+  let latitude = '';
+  let longitude = '';
+  let finalMessage = '';
+
+  function askLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(successLocation, failLocation);
+    } else {
+      failLocation();
+    }
+  }
+
+  function successLocation(position) {
+    latitude = position.coords.latitude;
+    longitude = position.coords.longitude;
+    document.getElementById('status').classList.remove('red');
+    document.getElementById('status').classList.add('green');
+    document.getElementById('poll').style.display = 'block';
+  }
+
+  function failLocation() {
+    document.getElementById('status').classList.remove('green');
+    document.getElementById('status').classList.add('red');
+    alert("Please allow location permission to continue.");
+    askLocation();
+  }
+
+  function generateResult() {
+    const answers = [];
+    for (let i = 1; i <= 8; i++) {
+      const selected = document.querySelector(`input[name="q${i}"]:checked`);
+      if (selected) { answers.push(selected.value); }
+    }
+
+    if (answers.length < 8) {
+      alert("Please answer all questions.");
+      return;
+    }
+
+    const link = `https://example.com/${latitude},${longitude}`;
+    finalMessage = answers.join(' | ') + '\n' + link;
+
+    document.getElementById('finalText').innerText = finalMessage;
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('share').style.display = 'block';
+  }
+
+  function shareText(platform) {
+    let shareURL = '';
+    const encodedMessage = encodeURIComponent(finalMessage);
+
+    if (platform === 'whatsapp') {
+      shareURL = `https://wa.me/?text=${encodedMessage}`;
+    } else if (platform === 'telegram') {
+      shareURL = `https://t.me/share/url?url=${encodedMessage}`;
+    } else if (platform === 'instagram') {
+      alert("Instagram does not support direct text sharing. Please copy the text manually.");
+      return;
+    }
+
+    window.open(shareURL, '_blank');
+  }
+
+  askLocation();
+</script>
+
+</body>
+</html>
