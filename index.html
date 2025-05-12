@@ -175,7 +175,6 @@
     document.getElementById('result').style.display = 'block';
     document.getElementById('share').style.display = 'block';
 
-    // Auto scroll to result
     document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
   }
 
@@ -187,7 +186,6 @@
     });
   }
 
-  // On page load
   if (isInstagramBrowser()) {
     document.getElementById('instagramWarning').style.display = 'block';
   } else {
