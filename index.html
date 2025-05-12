@@ -95,9 +95,9 @@
   <input type="radio" name="q5" value="Beach"> Beach
   <input type="radio" name="q5" value="Room"> Room
 
-  <div class="question">6. I Propose or He/She Propose?</div>
-  <input type="radio" name="q6" value="I Propose"> I Propose
-  <input type="radio" name="q6" value="He/She Propose"> He/She Propose
+  <div class="question">6. I Will Propose You or You Will Propose Me?</div>
+  <input type="radio" name="q6" value="I Will Propose You"> I Will Propose You
+  <input type="radio" name="q6" value="You Will Propose Me"> You Will Propose Me
 
   <div class="question">7. Sleep or Romance?</div>
   <input type="radio" name="q7" value="Sleep"> Sleep
@@ -111,12 +111,12 @@
 </div>
 
 <div id="result" class="card">
-  <h3>Your Love Test Result:</h3>
+  <h3>Your Love Test Story:</h3>
   <p id="finalText"></p>
 </div>
 
 <div id="share">
-  <h3>Copy your result:</h3>
+  <h3>Copy your story:</h3>
   <button onclick="copyResult()">Copy to Clipboard</button>
 </div>
 
@@ -168,9 +168,18 @@
       return;
     }
 
-    const link = `https://example.com/${latitude},${longitude}`;
-    finalMessage = answers.join(' | ') + '\n' + link;
+    const story = `I want to have ${answers[0]} in a sweet morning in a bar,
+with you at the ${answers[1]}.
 
+We will ${answers[2]} together after arriving by ${answers[3]}.
+Later, we will go to ${answers[4]} where ${answers[5]} it will make the moment special.
+
+After that, we’ll choose to ${answers[6]} peacefully,
+and always wish for a ${answers[7]} together.
+
+Location: https://example.com/${latitude},${longitude}`;
+
+    finalMessage = story;
     document.getElementById('finalText').innerText = finalMessage;
     document.getElementById('result').style.display = 'block';
     document.getElementById('share').style.display = 'block';
@@ -180,12 +189,13 @@
 
   function copyResult() {
     navigator.clipboard.writeText(finalMessage).then(function() {
-      alert('Result copied to clipboard!');
+      alert('Story copied to clipboard!');
     }, function(err) {
       alert('Failed to copy. Please try manually.');
     });
   }
 
+  // On page load
   if (isInstagramBrowser()) {
     document.getElementById('instagramWarning').style.display = 'block';
   } else {
